@@ -13,7 +13,14 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -21,8 +28,10 @@ import { ModalType, useModal } from '@/hooks/use-modal'
 import { generateBlogSlug } from '@/lib/generate-blog-slug'
 import { createBlogUrl } from '@/lib/create-blog-url'
 import { CreateBlogSchemaInput, createBlogSchema } from '@/schemas/blog/create-blog-schema'
+import { useToast } from '@/components/ui/use-toast'
 
 export function CreateBlogModal() {
+  const { toast } = useToast()
   const modal = useModal()
   const router = useRouter()
   const [blogSlug, setBlogSlug] = useState('')
@@ -45,13 +54,21 @@ export function CreateBlogModal() {
     try {
       await axios.post('/api/blogs', data)
 
-      alert('blog criado com sucesso')
+      toast({
+        title: 'Eba!',
+        description: 'Você já pode postar no seu novo blog!',
+        duration: 3000
+      })
       form.reset()
       router.refresh()
       modal.onClose()
     } catch (error) {
-      // TODO: toast error
-      console.log(error)
+      toast({
+        variant: 'destructive',
+        title: 'Ops!',
+        description: 'Algo deu errado. Tente novamente mais tarde.',
+        duration: 3000
+      })
     } finally {
       setLoading(false)
     }
@@ -77,15 +94,34 @@ export function CreateBlogModal() {
       if (response.status === 200) {
         setAvailabilityVerified(true)
 
-        alert('url de acesso validada com sucesso')
+        toast({
+          title: 'Sucesso!!!',
+          description: 'Vimos que o endereço para seu novo blog está disponível!',
+          duration: 3000
+        })
       } else {
-        alert('nao foi possivel checar a url de acesso, tente novamente mais tarde')
+        toast({
+          variant: 'destructive',
+          title: '.....',
+          description: 'Parece que algo deu errado. Que tal tentar novamente mais tarde?',
+          duration: 3000
+        })
       }
     } catch (error) {
-      if (error instanceof AxiosError && error.status === 409) {
-        alert('a url de acesso nao esta disponivel')
+      if (error instanceof AxiosError && error.response?.status === 409) {
+        toast({
+          title: 'Um pequeno probleminha',
+          description: 'Parece que alguém já criou um blog com essa mesma URL de acesso, acredita?',
+          variant: 'destructive',
+          duration: 3000
+        })
       } else {
-        alert('ouve um erro interno, tente novamente mais tarde')
+        toast({
+          title: ':(',
+          description: 'Ouve um erro interno. Tente novamente mais tarde.',
+          variant: 'destructive',
+          duration: 3000
+        })
       }
     } finally {
       setLoading(false)
