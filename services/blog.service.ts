@@ -35,6 +35,28 @@ export class BlogService {
 
     return id
   }
+
+  public static async checkIfBelongsToAnUser(blogId: string, userId: string): Promise<boolean> {
+    const blog = await db.blog.findUnique({
+      where: {
+        id: blogId,
+        userId
+      },
+      select: {
+        id: true
+      }
+    })
+
+    return !!blog
+  }
+
+  public static async delete(id: string) {
+    await db.blog.delete({
+      where: {
+        id
+      }
+    })
+  }
 }
 
 type CreateInput = {
