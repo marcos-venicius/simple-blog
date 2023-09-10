@@ -1,8 +1,9 @@
+import { ClerkProvider } from '@clerk/nextjs'
+import { ptBR } from '@clerk/localizations'
 import { ThemeProvider } from '@/components/providers/theme-provider'
-import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { ThemeToggle } from '@/components/theme-toggle'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -13,17 +14,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='pt-BR'>
-      <body className={inter.className}>
-        <ThemeProvider
-          defaultTheme='light'
-          attribute='class'
-          storageKey='simple-blog-theme-configuration'
-          enableSystem>
-          <ThemeToggle />
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider localization={ptBR}>
+      <html
+        lang='pt-BR'
+        suppressHydrationWarning>
+        <body className={inter.className}>
+          <ThemeProvider
+            defaultTheme='light'
+            attribute='class'
+            storageKey='simple-blog-theme-configuration'
+            enableSystem>
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
