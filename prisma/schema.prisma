@@ -35,4 +35,5 @@ model Blog {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@index([slug])
 }

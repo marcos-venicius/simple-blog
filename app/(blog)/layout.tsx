@@ -7,7 +7,7 @@ type Props = {
 
 export default function DashboardLayout({ children }: Props) {
   return (
-    <main>
+    <main className='w-full h-full flex flex-col'>
       <Header />
       {children}
     </main>
