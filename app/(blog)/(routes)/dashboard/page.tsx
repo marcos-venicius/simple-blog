@@ -2,9 +2,17 @@ import { NewBlogButton } from '@/components/blog/new-blog-button'
 import { Button } from '@/components/ui/button'
 import { db } from '@/lib/db'
 import { currentUser } from '@clerk/nextjs'
-import { Send, Settings } from 'lucide-react'
+import { ExternalLink, FilePlus2, Library, Send, Settings, Trash } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
 export default async function DashboardPage() {
   const user = await currentUser()
@@ -27,11 +35,7 @@ export default async function DashboardPage() {
         {blogs.length === 0 && <p>Você não criou nenhum blog ainda</p>}
 
         {blogs.map(blog => (
-          <div className='p-6 rounded-lg border dark:border-zinc-700 relative'>
-            <Button className='absolute top-0 left-0 rounded-none rounded-br rounded-tl bg-transparent opacity-30 hover:opacity-100 transition-opacity hover:bg-transparent z-10'>
-              <Settings className='text-foreground' />
-            </Button>
-
+          <div className='p-6 rounded-lg border dark:border-zinc-700'>
             <div className='w-40 h-40 mx-auto relative'>
               <Image
                 fill
@@ -48,10 +52,34 @@ export default async function DashboardPage() {
             </Link>
 
             <div className='mt-8 w-full flex items-center gap-2 justify-end'>
-              <Button>
-                <Send className='w-4 h-4 mr-3' />
-                postar
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Settings className='text-foreground' />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem className='cursor-pointer'>
+                    <ExternalLink className='w-4 h-4 mr-2' />
+                    Abrir
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className='cursor-pointer'>
+                    <Library className='w-4 h-4 mr-2' />
+                    Posts
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className='cursor-pointer'>
+                    <FilePlus2 className='w-4 h-4 mr-2' />
+                    Novo post
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className='cursor-pointer'>
+                    <Settings className='w-4 h-4 mr-2' />
+                    Configurações
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className='cursor-pointer text-red-500 hover:text-red-400 focus-visible:text-red-400'>
+                    <Trash className="text-red-500 w-4 h-4 mr-2"/>
+                    Deletar
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         ))}
